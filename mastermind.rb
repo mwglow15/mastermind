@@ -103,19 +103,17 @@ class HumanPlayer
     code.each_with_index do |val, i|
       if val == guess[i]
         response.push(0)
-        guess.delete_at(i)
-      end
-    end
-    code.each_with_index do |val, i|
-      if guess.include? val
+        guess[i] = nil
+      elsif guess.include? val
         response.push(1)
-        guess.delete_at(guess.index(val))
+        guess[guess.index(val)] = nil
       end
     end
     puts "Code maker's response:"
     p response.shuffle
   end
 
+attr_reader :name
 end
 
 Game.new(HumanPlayer,HumanPlayer).play
