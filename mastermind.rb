@@ -24,6 +24,8 @@ class Game
 
       end
 
+      puts "#{code_breaker.name}, you ran out of guesses! #{code_maker.name}, you win!"
+
       keep_playing?
 
       break if game_over
