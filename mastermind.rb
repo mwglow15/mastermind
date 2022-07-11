@@ -20,7 +20,7 @@ class Game
 
         return "#{code_breaker.name}, you cracked the code!" if guessed_code?(guess)
 
-        code_maker.compare_guess(guess)
+        code_maker.compare_guess(@code, guess)
 
       end
 
@@ -29,7 +29,6 @@ class Game
       break if game_over
       switch_players!
     end
-
   end
 
   def code_maker
@@ -43,6 +42,10 @@ class Game
   def switch_players!
     @code_breaker_id = @code_maker_id
     @code_maker_id = (@code_maker_id + 1) % 2
+  end
+
+  def guessed_code?(guess)
+    @code == guess
   end
 
   def game_over
@@ -67,7 +70,7 @@ class HumanPlayer
       loop do 
         num = gets.to_i
         if num >= 1 && num <= 6
-          code[index] = num
+          code.push(num)
           break
         end
       puts "Incorrect input! Please enter a valid number between 1 and 6"
@@ -83,7 +86,7 @@ class HumanPlayer
       loop do 
         num = gets.to_i
         if num >= 1 && num <= 6
-          guess[index] = num
+          guess.push(num)
           break
         end
       puts "Incorrect input! Please enter a valid number between 1 and 6"
@@ -91,6 +94,25 @@ class HumanPlayer
     end
     return guess
   end
+
+  def compare_guess(code, guess)
+    # in response, 0 = correct color, correct place and 1 = correct color, wrong place
+    response = []
+    code.each_with_index do |val, i|
+      if val == guess[i]
+        response.push(0)
+        guess.delete_at(i)
+      end
+    end
+    code.each_with_index do |val, i|
+      if guess.include? val
+        response.push(1)
+        guess.delete_at(guess.index(val))
+      end
+    end
+  end
+  puts "Code maker's response:"
+  p response.shuffle
 end
 
 Game.new(HumanPlayer,HumanPlayer).play
