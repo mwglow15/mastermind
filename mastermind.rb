@@ -110,9 +110,10 @@ class HumanPlayer
         guess.delete_at(guess.index(val))
       end
     end
+    puts "Code maker's response:"
+    p response.shuffle
   end
-  puts "Code maker's response:"
-  p response.shuffle
+
 end
 
 Game.new(HumanPlayer,HumanPlayer).play
