@@ -70,9 +70,26 @@ class HumanPlayer
           code[index] = num
           break
         end
+      puts "Incorrect input! Please enter a valid number between 1 and 6"
       end
     end
     return code
+  end
+
+  def make_guess
+    guess = []
+    puts "#{@name}, guess the code! (4 digits between 1 and 6)"
+    4.times do |index|
+      loop do 
+        num = gets.to_i
+        if num >= 1 && num <= 6
+          guess[index] = num
+          break
+        end
+      puts "Incorrect input! Please enter a valid number between 1 and 6"
+      end
+    end
+    return guess
   end
 end
 
