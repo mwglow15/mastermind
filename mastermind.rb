@@ -1,5 +1,5 @@
 class Game
-  COLORS = [red,blue,yellow,green,white,black]
+  COLORS = ["red","blue","yellow","green","white","black"]
 
   def initialize(player_1_class,player_2_class)
     @guesses = 0
@@ -13,10 +13,10 @@ class Game
     @players[0].ask_name
     @players[1].ask_name
     loop do
-      code_maker.create_code
-
+      @code = code_maker.create_code
+      p @code
       10.times do 
-        guess = code_maker.make_guess
+        guess = code_breaker.make_guess
 
         return "#{code_breaker.name}, you cracked the code!" if guessed_code?(guess)
 
@@ -49,11 +49,31 @@ class Game
     puts "Would you like to switch roles and play again?"
     puts "'yes' or 'no'"
     response = gets.chomp
-    response == "yes" ? return false : return true
+    response == "yes" ? false : true
   end
 
 end
 
 class HumanPlayer
+  def ask_name
+    puts "What is your name?"
+    @name = gets.chomp
+  end
 
+  def create_code
+    code = []
+    puts "Please enter 4 numbers between 1 and 6"
+    4.times do |index|
+      loop do 
+        num = gets.to_i
+        if num >= 1 && num <= 6
+          code[index] = num
+          break
+        end
+      end
+    end
+    return code
+  end
 end
+
+Game.new(HumanPlayer,HumanPlayer).play
