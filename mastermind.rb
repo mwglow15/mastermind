@@ -2,7 +2,7 @@ class Game
   COLORS = ["red","blue","yellow","green","white","black"]
 
   def initialize(player_1_class,player_2_class)
-    @guesses = 0
+    @guesses = 10
 
     @code_maker_id = 0
     @code_breaker_id = 1
@@ -13,13 +13,16 @@ class Game
     @players[0].ask_name
     @players[1].ask_name
     loop do
+      guessed = false
       @code = code_maker.create_code
       p @code
-      10.times do 
+      @guesses.times do |i|
+        puts "#{@guesses - i} guesses remaining"
         guess = code_breaker.make_guess
 
-        if guessed_code?(guess) do
-          puts "#{code_breaker.name}, you cracked the code!" 
+        if guessed_code?(guess)
+          puts "#{code_breaker.name}, you cracked the code!"
+          guessed = true
           break
         end
       
@@ -28,13 +31,14 @@ class Game
 
       end
 
-      puts "#{code_breaker.name}, you ran out of guesses! #{code_maker.name}, you win!"
+      unless guessed
+        puts "#{code_breaker.name}, you ran out of guesses! #{code_maker.name}, you win!"
+      end
 
-      keep_playing?
-
-      if game_over
+      unless keep_playing?
         break
       end
+      
       switch_players!
     end
   end
@@ -78,6 +82,12 @@ class Game
     puts "Code maker's response:"
     p response.shuffle
   end
+
+  def keep_playing?
+    puts "Would you like to switch roles and play again? yes or no"
+    response = gets.chomp
+    response == "yes" ? true : false      
+  end
 end
 
 class HumanPlayer
@@ -115,10 +125,11 @@ class HumanPlayer
       puts "Incorrect input! Please enter a valid number between 1 and 6"
       end
     end
-    return guess
+    guess
   end
 
 attr_reader :name
 end
+
 
 Game.new(HumanPlayer, HumanPlayer).play
