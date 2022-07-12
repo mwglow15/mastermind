@@ -18,9 +18,13 @@ class Game
       10.times do 
         guess = code_breaker.make_guess
 
-        return "#{code_breaker.name}, you cracked the code!" if guessed_code?(guess)
+        if guessed_code?(guess) do
+          puts "#{code_breaker.name}, you cracked the code!" 
+          break
+        end
+      
 
-        code_maker.compare_guess(@code, guess)
+        compare_guess(guess)
 
       end
 
@@ -28,7 +32,9 @@ class Game
 
       keep_playing?
 
-      break if game_over
+      if game_over
+        break
+      end
       switch_players!
     end
   end
@@ -57,6 +63,21 @@ class Game
     response == "yes" ? false : true
   end
 
+  def compare_guess(guess)
+    # in response, 0 = correct color, correct place and 1 = correct color, wrong place
+    response = []
+    @code.each_with_index do |val, i|
+      if val == guess[i]
+        response.push(0)
+        guess[i] = nil
+      elsif guess.include? val
+        response.push(1)
+        guess[guess.index(val)] = nil
+      end
+    end
+    puts "Code maker's response:"
+    p response.shuffle
+  end
 end
 
 class HumanPlayer
@@ -68,8 +89,8 @@ class HumanPlayer
   def create_code
     code = []
     puts "Please enter 4 numbers between 1 and 6"
-    4.times do |index|
-      loop do 
+    4.times do
+      loop do
         num = gets.to_i
         if num >= 1 && num <= 6
           code.push(num)
@@ -84,8 +105,8 @@ class HumanPlayer
   def make_guess
     guess = []
     puts "#{@name}, guess the code! (4 digits between 1 and 6)"
-    4.times do |index|
-      loop do 
+    4.times do
+      loop do
         num = gets.to_i
         if num >= 1 && num <= 6
           guess.push(num)
@@ -97,23 +118,7 @@ class HumanPlayer
     return guess
   end
 
-  def compare_guess(code, guess)
-    # in response, 0 = correct color, correct place and 1 = correct color, wrong place
-    response = []
-    code.each_with_index do |val, i|
-      if val == guess[i]
-        response.push(0)
-        guess[i] = nil
-      elsif guess.include? val
-        response.push(1)
-        guess[guess.index(val)] = nil
-      end
-    end
-    puts "Code maker's response:"
-    p response.shuffle
-  end
-
 attr_reader :name
 end
 
-Game.new(HumanPlayer,HumanPlayer).play
+Game.new(HumanPlayer, HumanPlayer).play
